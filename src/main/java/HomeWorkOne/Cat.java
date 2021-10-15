@@ -1,6 +1,6 @@
 package HomeWorkOne;
 
-public class Cat implements Runnable, Jumpable {
+public class Cat implements Action {
     private String name;
     private int distanceRun;
     private int jumpHeight;
