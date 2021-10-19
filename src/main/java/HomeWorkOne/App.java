@@ -2,23 +2,14 @@ package HomeWorkOne;
 
 public class App {
     public static void main(String[] args) {
-        Human human = new Human("Maks", 2000, 2);
-        Cat cat = new Cat("Barsik", 500, 1);
-        Robot robot = new Robot("Terminator", 100, 4);
-        Wall wall = new Wall( 3);
-        RunningRoad runningRoad = new RunningRoad(1000);
 
-        Jumpable[] jumpables = new Jumpable[] {cat, human, robot};
-        for (Jumpable jumpable : jumpables) {
-            wall.jumping(jumpable);
+        Action[] actions = new Action[] {new Robot("Terminator", 100, 4), new Human("Макс", 2000, 2), new Cat("Барсик", 500, 1)};
+        Obstacle[] obstacles = new Obstacle[] {new RunningRoad("Беговая дорожка", 1000), new Wall("Стена", 4)};
+        for (int i = 0; i < actions.length; i++) {
+            for (int j = 0; j < obstacles.length; j++){
+                obstacles[j].moving(actions[i]);
+                System.out.println();
+            }
         }
-        System.out.println();
-
-        Runnable[] runnables = new Runnable[] {cat, human, robot};
-        for (Runnable runnable : runnables) {
-            runningRoad.running(runnable);
-        }
-
-
     }
 }

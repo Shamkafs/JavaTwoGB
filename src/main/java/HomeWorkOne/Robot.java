@@ -1,6 +1,6 @@
 package HomeWorkOne;
 
-public class Robot implements Runnable, Jumpable {
+public class Robot implements Action {
     private String name;
     private int distanceRun;
     private int jumpHeight;

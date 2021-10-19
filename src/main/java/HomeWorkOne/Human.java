@@ -1,6 +1,6 @@
 package HomeWorkOne;
 
-public class Human implements Runnable, Jumpable {
+public class Human implements Action {
     private String name;
     private int distanceRun;
     private int jumpHeight;
@@ -20,12 +20,12 @@ public class Human implements Runnable, Jumpable {
     }
 
     @Override
-    public void jump() {
-        System.out.println("Человек " + this.name + " умеет прыгать на " + this.getJumpHeight() + " м. в высоту");
+    public void run() {
+        System.out.println("Человек " + this.name + " может пробежать " + this.getDistanceRun() + " м.");
     }
 
     @Override
-    public void run() {
-        System.out.println("Человек " + this.name + " может пробежать " + this.getDistanceRun() + " м.");
+    public void jump() {
+        System.out.println("Человек " + this.name + " умеет прыгать на " + this.getJumpHeight() + " м. в высоту");
     }
 }
