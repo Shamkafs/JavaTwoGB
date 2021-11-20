@@ -1,11 +1,13 @@
 package HomeWork7.server;
 
+import java.util.Optional;
+
 public interface AuthService {
 
     void start();
 
     void stop();
 
-    String getNickByLoginAndPass(String login, String pass);
+    Optional<String> getNickByLoginAndPass(String login, String pass);
 
 }
