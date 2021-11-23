@@ -1,15 +1,14 @@
 package HomeWork7.server;
 
 import HomeWork7.constants.Constants;
-import HomeWork7.server.AuthService;
-import HomeWork7.server.BaseAuthService;
-import HomeWork7.server.ClientHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 
@@ -26,9 +25,9 @@ public class MyServer {
         return clients;
     }
 
-    public MyServer() {
+    public MyServer() throws SQLException {
         try (ServerSocket server = new ServerSocket(Constants.SERVER_PORT)) {
-            authService = new BaseAuthService();
+            authService = new DataBaseAuthService();
             authService.start();
 
             clients = new ArrayList<>();

@@ -2,7 +2,7 @@ package HomeWork7.constants;
 
 public class Constants {
     public static final String SERVER_ADDRESS = "localhost";
-    public static final int SERVER_PORT = 8189;
+    public static final int SERVER_PORT = 8180;
 
     public static final String END_COMMAND = "/end";
 
@@ -15,4 +15,6 @@ public class Constants {
     public static final String CLIENTS_LIST_COMMAND = "/clients";
 
     public static final long TIME = 120001;
+
+    public static final String RENAME = "/rename";
 }

@@ -28,6 +28,7 @@ public class EchoClient extends JFrame {
         prepareUI();
     }
 
+
     private void openConnection() throws IOException {
         socket = new Socket(Constants.SERVER_ADDRESS, Constants.SERVER_PORT);
         dataInputStream = new DataInputStream(socket.getInputStream());

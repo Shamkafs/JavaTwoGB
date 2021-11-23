@@ -6,8 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
-import java.util.Optional;
+import java.sql.SQLException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,7 +30,7 @@ public class ClientHandler {
                 try {
                     ClientHandler.this.authentification();
                     ClientHandler.this.readMessage();
-                } catch (IOException ex) {
+                } catch (IOException | SQLException ex) {
                     ex.printStackTrace();
                 } finally {
                     ClientHandler.this.closeConnection();
@@ -58,13 +57,12 @@ public class ClientHandler {
             String str = in.readUTF();
             if (str.startsWith(Constants.AUTH_COMMAND)) {
                 String[] tokens = str.split("\\s+");
-                Optional<String> nick = server.getAuthService().getNickByLoginAndPass(tokens[1], tokens[2]);
-
-                if (nick.isPresent()) {
-                    if (server.isNickBusy(nick.get())) {
+                String nick = server.getAuthService().getNickByLoginAndPass(tokens[1], tokens[2]);
+                if (nick != null) {
+                    if (server.isNickBusy(nick)) {
                         sendMessage("Учетная запись уже используется");
                     } else {
-                        name = nick.get();
+                        name = nick;
                         sendMessage(Constants.AUTH_OK_COMMAND + " как: " + name);
                         server.broadcastMessage(name + " вошёл в чат");
                         server.subscribe(this);
@@ -89,29 +87,28 @@ public class ClientHandler {
     }
 
 
-    private void readMessage() throws IOException {
+    private void readMessage() throws IOException, SQLException {
             while (true) {
                 String messageFromClient = in.readUTF();
-
+                String[] tokens = messageFromClient.split("\\s+");
                 if (messageFromClient.startsWith(Constants.CLIENTS_LIST_COMMAND)) {
                     sendMessage(server.getActiveClients());
+                } else if (tokens[0].equals((Constants.RENAME))) {
+                    DataBaseAuthService.renameUsers(tokens[1], name);
+                    server.broadcastMessage(name + " переименовался в " + tokens[1]);
+                    name = tokens[1];
+                } else if (tokens[0].equals(Constants.PRIVATE_MESSAGE)) {
+                    int length = tokens.length - 2;
+                    String[] message = new String[length];
+                    System.arraycopy(tokens, 2, message, 0, message.length);
+                    server.privateSendMessage("Личное сообщение от " + name + ": " + String.join(" ", message), tokens[1], name);
+                    System.out.println("Сообщение от " + name + ": " + messageFromClient);
                 } else {
-
-                    String[] tokens = messageFromClient.split("\\s+");
-
-                    if (tokens[0].equals(Constants.PRIVATE_MESSAGE)) {
-                        int length = tokens.length - 2;
-                        String[] message = new String[length];
-                        System.arraycopy(tokens, 2, message, 0, message.length);
-                        server.privateSendMessage("Личное сообщение от " + name + ": " + String.join(" ", message), tokens[1], name);
-                        System.out.println("Сообщение от " + name + ": " + messageFromClient);
-                    } else {
-                        System.out.println("Сообщение от " + name + ": " + messageFromClient);
-                        server.broadcastMessage(name + ": " + messageFromClient);
-                    }
-                    if (messageFromClient.equals(Constants.END_COMMAND)) {
-                        break;
-                    }
+                    System.out.println("Сообщение от " + name + ": " + messageFromClient);
+                    server.broadcastMessage(name + ": " + messageFromClient);
+                }
+                if (messageFromClient.equals(Constants.END_COMMAND)) {
+                    break;
                 }
             }
     }
@@ -119,7 +116,9 @@ public class ClientHandler {
 
     private void closeConnection() {
         server.unsubscribe(this);
-        server.broadcastMessage(getName() + " вышел из чата");
+        if (getName() != null) {
+            server.broadcastMessage(getName() + " вышел из чата");
+        }
         try {
             in.close();
         } catch (IOException ex) {
