@@ -1,7 +1,5 @@
 package HomeWork7.server;
 
-import java.util.Optional;
-
 import java.sql.SQLException;
 
 public interface AuthService {
