@@ -4,8 +4,6 @@ import HomeWork7.constants.Constants;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,6 +28,7 @@ public class EchoClient extends JFrame {
         prepareUI();
     }
 
+
     private void openConnection() throws IOException {
         socket = new Socket(Constants.SERVER_ADDRESS, Constants.SERVER_PORT);
         dataInputStream = new DataInputStream(socket.getInputStream());
@@ -38,15 +37,16 @@ public class EchoClient extends JFrame {
             try {
                 while (true) {
                     String messageFromServer = dataInputStream.readUTF();
-                    if (messageFromServer.equals("/end")) {
+                    if (messageFromServer.equals(Constants.END_COMMAND)) {
                         break;
+                    } else {
+                        textArea.append(messageFromServer);
+                        textArea.append("\n");
                     }
-                    textArea.append(messageFromServer);
-                    textArea.append("\n");
                 }
                 textArea.append("Соединение разорвано");
                 textField.setEnabled(false);
-                closeConnection();
+                EchoClient.this.closeConnection();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

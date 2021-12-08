@@ -4,6 +4,7 @@ import HomeWork7.server.AuthService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BaseAuthService implements AuthService {
 
@@ -27,13 +28,18 @@ public class BaseAuthService implements AuthService {
     }
 
     @Override
-    public String getNickByLoginAndPass(String login, String pass) {
-        for (Entry entry : entries) {
+    public Optional<String > getNickByLoginAndPass(String login, String pass) {
+        return entries.stream()
+                .filter(entry -> entry.login.equals(login) && entry.password.equals(pass))
+                .map(entry -> entry.nick)
+                .findFirst();
+
+        /*for (Entry entry : entries) {
             if (entry.login.equals(login) && entry.password.equals(pass)) {
-                return entry.nick;
+                return Optional.of(entry.nick);
             }
         }
-        return null;
+        return Optional.empty();*/
     }
 
     private class Entry {
