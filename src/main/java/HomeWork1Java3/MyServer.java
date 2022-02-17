@@ -1,4 +1,4 @@
-package HomeWork7.server;
+package HomeWork1Java3;
 
 import HomeWork7.constants.Constants;
 

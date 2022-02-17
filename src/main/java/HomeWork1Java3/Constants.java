@@ -1,4 +1,4 @@
-package HomeWork7.constants;
+package HomeWork1Java3;
 
 public class Constants {
     public static final String SERVER_ADDRESS = "localhost";
